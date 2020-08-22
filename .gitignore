@@ -3,3 +3,5 @@ rigremote.code-workspace
 ACCESSI.md
 whoisconnected.code-workspace
 config/config.ini
+twistd.pid
+__pycache__

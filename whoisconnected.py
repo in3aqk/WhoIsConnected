@@ -1,3 +1,5 @@
+import sys
+
 from klein import Klein
 app = Klein()
 
@@ -9,4 +11,9 @@ def pg_root(request):
 def pg_about(request):
     return 'I am a Klein application!'
 
-app.run("localhost", 8080)
+#release or develop selection
+if len(sys.argv) > 1 : 
+    resource = app.resource    
+else:
+    app.run("localhost", 8080)
+
