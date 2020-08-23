@@ -8,7 +8,7 @@ Who is connected to my RemoteRig
 
 # System requirements
 
-Python 3.6
+Python 3.8 or more
 
 
 
@@ -25,11 +25,18 @@ The web server is based on twisted and twistd
 pip3 install twisted
 ```
 
+### Selenium
+
+Web grabbing library
+
+```bash
+# Installation
+pip3 install selenium
+```
 
 
 
-
-## Klein
+### Klein
 
 The web server is based on klein web server
 
@@ -42,4 +49,12 @@ The web server is based on klein web server
 <https://klein.readthedocs.io/en/latest/>
 
 
+
+## Misc python libraries
+
+```bash
+# BeautifulSoup
+pip3 install beautifulsoup4
+
+```
 

@@ -5,3 +5,4 @@ whoisconnected.code-workspace
 config/config.ini
 twistd.pid
 __pycache__
+html/
