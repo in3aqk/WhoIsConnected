@@ -6,3 +6,4 @@ config/config.ini
 twistd.pid
 __pycache__
 html/
+logs/*.log

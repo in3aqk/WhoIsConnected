@@ -25,15 +25,6 @@ The web server is based on twisted and twistd
 pip3 install twisted
 ```
 
-### Selenium
-
-Web grabbing library
-
-```bash
-# Installation
-pip3 install selenium
-```
-
 
 
 ### Klein

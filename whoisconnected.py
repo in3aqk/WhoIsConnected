@@ -12,7 +12,9 @@ __status__ = "Development"
 import sys
 from klein import Klein
 from twisted.web.template import Element, XMLString, renderer
-from lib.grabber import Grabber
+from libs.grabber import Grabber
+import libs.log
+
 
 """
 class HelloElement(Element):
@@ -55,13 +57,10 @@ grabber = None
 
 def init():
     grabber = Grabber()
-    grabber.getInfoPage()
+    page = grabber.getInfoPage()
+    if page:
+        print(page)
     
-
-
-
-
-
 
 init()
 
