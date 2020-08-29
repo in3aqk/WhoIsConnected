@@ -22,8 +22,6 @@ class Grabber:
 
     def __init__(self):
         self.conf = readIni()
-                
-        logging.info("Test")
 
         if self.conf:
             self.infoPageUrl = "{}{}".format(
@@ -39,7 +37,49 @@ class Grabber:
         """
 
         page = self.__getPage(self.infoPageUrl)
-        return page    
+        return page
+
+
+    def getHeadInfo(self):
+        """Get head info grabbing the info page
+
+           returns tuple with usel info        
+        """
+        infos = {}
+        otherParty = None
+        otherPartyMac = None
+        page = self.getInfoPage()
+        soup = BeautifulSoup(page.content, 'html.parser')
+                
+        infos['otherPartyMac'] = ''
+        
+        ipFound = False
+        macFound = False
+        for tr in soup.find_all('tr'):
+            if b"Other party" in tr.renderContents() and not ipFound:
+                tds = tr.find_all('td')
+                ipFound = True
+                if len(tds) == 2:
+                    otherParty = tds[1].renderContents()
+                    infos['otherParty'] = otherParty.decode()
+                    logging.info("Head ip %s",otherParty.decode()) # TODO LOG Entry Duplicate
+                else:
+                    otherParty = None
+            if b"Other party(mac)" in tr.renderContents() and not macFound:
+                tds = tr.find_all('td')
+                if len(tds) == 2:
+                    macFound = True
+                    otherPartyMac = tds[1].renderContents()
+                    infos['otherPartyMac'] = otherPartyMac.decode()
+                    logging.info("Head %s",otherPartyMac)
+                else:
+                    otherPartyMac = None
+                    infos['otherPartyMac'] = ''
+            
+        if otherPartyMac == None:
+            logging.info("Head not found")
+
+        return infos
 
 
     def __getPage(self, url):

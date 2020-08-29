@@ -66,7 +66,7 @@ init()
 
 #release or develop selection
 if len(sys.argv) > 1 : 
-    resource = app.resource    
+    resource = app.resource
 else:
     app.run("localhost", 8080)
 
