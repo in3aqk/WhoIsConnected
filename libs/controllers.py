@@ -12,10 +12,7 @@ import os
 import re
 
 import requests
-from twisted.python.filepath import FilePath
-from twisted.web.template import Element, XMLFile, XMLString, renderer, tags
-
-import libs.grabber
+from libs.grabber import Grabber
 from libs.utility import readIni
 
 
@@ -23,19 +20,36 @@ class Pages():
 
     html_path = None
     conf = None  # conf obj
+    grabber = None
 
     def __init__(self):
         self.conf = readIni()
+        self.grabber = Grabber()
         self.html_path = os.path.dirname(
             os.path.realpath(__file__)) + "/../html/"
 
-    def get_page(self, page):
-        main = self.__merge_page("main.html", page)
+ 
+
+    def dashboard(self):
+
+        page = self.grabber.getInfoPage()
+        head_info = None
+        if page:
+            head_info = self.grabber.getHeadInfo()
+        head = {
+            "head_mac":head_info["otherPartyMac"],
+            "head_ip":head_info["otherParty"]
+        }
+        return self.get_page("dashboard",head)
+
+    def get_page(self, page, vars):
+        main = self.__merge_page("main.html", page, vars)
         return main
 
-    def __merge_page(self, main_page, page_name):
+    def __merge_page(self, main_page, page_name, vars):
 
         page = self.__get_page(main_page)
+        new_page = None
         for line in page.splitlines():
             if "{{" in line:
                 m = re.search('{{(.+?)}}', line)
@@ -51,7 +65,17 @@ class Pages():
                         to_be_replaced = "{{" + found + "}}"
                         insert_page = self.__get_page(found)
                         new_page = page.replace(to_be_replaced, insert_page)
+
                     page = new_page
+
+        if vars:
+            for line in page.splitlines():
+                if "{{" in line:
+                    for var in vars:
+                        new_page = page.replace("{{"+var+"}}", vars[var])
+                        page = new_page
+        
+        del new_page
         return page
 
     def __get_page(self, page_name):
@@ -61,41 +85,9 @@ class Pages():
         return page
 
 
-class HomeController(Element):
-    title = "Dashboard"
-    loader = XMLFile(FilePath('./html/main.xml'))
-    dashboard_xml = XMLFile(FilePath('./html/dashboard.xml'))
-    menu_content_xml = XMLFile(FilePath('./html/menu.xml'))
-    foot_xml = XMLFile(FilePath('./html/footer.xml'))
-
-    @renderer
-    def menu(self, request, tag):
-        return self. menu_content_xml.load()
-
-    @renderer
-    def dashboard(self, request, tag):
-        return self.dashboard_xml.load()
-
-    @renderer
-    def footer(self, request, tag):
-        return self.foot_xml.load()
+grabber = None
 
 
-class AboutController(Element):
-    title = "About"
-    loader = XMLFile(FilePath('./html/main.xml'))
-    dashboard_xml = XMLFile(FilePath('./html/about.xml'))
-    menu_content_xml = XMLFile(FilePath('./html/menu.xml'))
-    foot_xml = XMLFile(FilePath('./html/footer.xml'))
-
-    @renderer
-    def menu(self, request, tag):
-        return self. menu_content_xml.load()
-
-    @renderer
-    def dashboard(self, request, tag):
-        return self.dashboard_xml.load()
-
-    @renderer
-    def footer(self, request, tag):
-        return self.foot_xml.load()
+def init():
+    grabber = Grabber()
+    

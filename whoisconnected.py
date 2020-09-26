@@ -17,7 +17,8 @@ from twisted.web.template import (Element, XMLFile, XMLString, flattenString,
                                   renderer, tags)
 
 import libs.log
-from libs.controllers import AboutController, HomeController, Pages
+
+from libs.controllers import Pages
 from libs.grabber import Grabber
 
 app = Klein()
@@ -26,12 +27,12 @@ pages = Pages()
 
 @app.route('/')
 def main_page(request):
-    return pages.get_page("dashboard")
+    return pages.dashboard()
 
 
 @app.route('/about')
 def about_page(request):
-    return pages.get_page("about")
+    return pages.get_page("about",None)
 
 
 @app.route('/assets/', branch=True)
@@ -43,19 +44,6 @@ def static(request):
 def images(request):
     return File("./html/images")
 
-
-grabber = None
-
-
-def init():
-    grabber = Grabber()
-    page = grabber.getInfoPage()
-    if page:
-        print(page)
-        grabber.getHeadInfo()
-
-
-init()
 
 # release or develop selection
 if len(sys.argv) > 1:

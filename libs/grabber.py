@@ -89,6 +89,10 @@ class Grabber:
 
         return infos
 
+    def update_heads(self):
+        pass
+ 
+
     def __get_page(self, url):
         """Get a page content
 
