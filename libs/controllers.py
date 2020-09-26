@@ -28,19 +28,38 @@ class Pages():
         self.html_path = os.path.dirname(
             os.path.realpath(__file__)) + "/../html/"
 
- 
-
     def dashboard(self):
+
+        other_heads_table = self.grabber.gen_head_table()
+        error_head = {
+            "head_mac": "ERROR",
+            "head_ip": "ERROR",
+            "head_name": "ERROR",
+            "other_heads_table":other_heads_table
+        }
 
         page = self.grabber.getInfoPage()
         head_info = None
+
+        
         if page:
             head_info = self.grabber.getHeadInfo()
-        head = {
-            "head_mac":head_info["otherPartyMac"],
-            "head_ip":head_info["otherParty"]
-        }
-        return self.get_page("dashboard",head)
+            self.grabber.update_heads(
+                head_info["otherPartyMac"], head_info["otherParty"])
+            head_on_db = self.grabber.get_head_from_db(
+                head_info["otherPartyMac"])
+            if head_on_db:
+                head = {
+                    "head_mac": head_on_db[1],
+                    "head_ip": head_on_db[2],
+                    "head_name": head_on_db[3],
+                    "other_heads_table":other_heads_table
+                }
+            else:
+                head = error_head
+        else:
+            head = error_head
+        return self.get_page("dashboard", head)
 
     def get_page(self, page, vars):
         main = self.__merge_page("main.html", page, vars)
@@ -74,7 +93,7 @@ class Pages():
                     for var in vars:
                         new_page = page.replace("{{"+var+"}}", vars[var])
                         page = new_page
-        
+
         del new_page
         return page
 
@@ -83,11 +102,3 @@ class Pages():
         with open('{}{}'.format(self.html_path, page_name)) as f:
             page = f.read()
         return page
-
-
-grabber = None
-
-
-def init():
-    grabber = Grabber()
-    

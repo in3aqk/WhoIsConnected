@@ -66,6 +66,45 @@ class Database:
             return result
 
 
+    def getHead(self, mac):
+        """ Get from db head by his mac\n
+            param:mac : Head Mac address            
+        """
+        result = False
+        try:
+            con = self.connect()
+            cur = con.cursor()
+            cur.execute("select * from heads where mac = ?", (mac,))
+            row = cur.fetchone()
+        except Error as err:
+            logging.error(err)
+        else:            
+            result = row
+        finally:
+            cur.close()
+            con.close()
+            return result
+
+    def get_all_heads(self):
+        """ Get from db all heads\n            
+        """
+        result = False
+        try:
+            con = self.connect()
+            cur = con.cursor()
+            cur.execute("select * from heads order by name asc")
+            rows = cur.fetchall()
+        except Error as err:
+            logging.error(err)
+        else:            
+            result = rows
+        finally:
+            cur.close()
+            con.close()
+            return result
+
+
+
     def updateHeadByMac(self, ip, mac, name="unknown"):
         """ Save a new remote rig head\n
             param:ip  : Head Ip \n

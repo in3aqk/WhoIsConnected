@@ -8,6 +8,7 @@ __email__ = "mattiolo@gmail.com"
 __status__ = "Development"
 
 from libs.utility import readIni
+from libs.database import Database
 import libs.grabber
 from bs4 import BeautifulSoup
 import requests
@@ -20,9 +21,11 @@ class Grabber:
     infoPageUrl = None
     example_path = None
     is_local = None
+    db = None
 
     def __init__(self):
         self.conf = readIni()
+        self.db = Database()
 
         if self.conf:
             self.infoPageUrl = "{}{}".format(
@@ -89,9 +92,32 @@ class Grabber:
 
         return infos
 
-    def update_heads(self):
-        pass
- 
+    def update_heads(self,head_mac,head_ip):
+        head = self.db.getHead(head_mac)
+        if not head:
+            self.db.insertHead(head_ip,head_mac)
+
+    def get_head_from_db(self,head_mac):
+        return self.db.getHead(head_mac)
+
+    def get_all_heads(self):
+        return self.db.get_all_heads()
+
+
+    def gen_head_table(self):
+        heads = self.get_all_heads()
+        table_content = ""
+        table_content = table_content + "<thead><tr><th>CALL</th><th>MAC</th><th>IP</th></tr></thead>"
+
+        for head in heads:
+            table_content = table_content + "<tbody><tr><td>{}</td><td>{}</td><td>{}</td></tr></tbody>".format(head[3],head[2],head[1])
+
+        table = """
+        <table class="pure-table pure-table-horizontal">
+        {}
+        </table>
+        """.format(table_content)
+        return table
 
     def __get_page(self, url):
         """Get a page content
