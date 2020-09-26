@@ -11,27 +11,27 @@ __status__ = "Development"
 import sys
 
 from klein import Klein
-from twisted.web.static import File
 from twisted.python.filepath import FilePath
+from twisted.web.static import File
 from twisted.web.template import (Element, XMLFile, XMLString, flattenString,
                                   renderer, tags)
 
 import libs.log
+from libs.controllers import AboutController, HomeController, Pages
 from libs.grabber import Grabber
-from libs.controllers import Pages
-from libs.controllers import HomeController
-from libs.controllers import AboutController
 
 app = Klein()
 pages = Pages()
 
+
 @app.route('/')
 def main_page(request):
-    return pages.get_page("dashboard.html")
+    return pages.get_page("dashboard")
+
 
 @app.route('/about')
 def about_page(request):
-    return pages.get_page("about.html")
+    return pages.get_page("about")
 
 
 @app.route('/assets/', branch=True)
@@ -42,21 +42,6 @@ def static(request):
 @app.route('/images/', branch=True)
 def images(request):
     return File("./html/images")
-
-
-"""
-@app.route('/whois')
-def pg_whois(request):
-    return 'Whois'
-
-@app.route('/about')
-def pg_about(request):
-    return 'Who is connected to RemoteRig'
-
-@app.route('/hello/<string:name>')
-def home(request, name='world'):
-    return HelloElement(name)
-"""
 
 
 grabber = None
