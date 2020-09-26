@@ -41,6 +41,16 @@ The web server is based on klein web server
 
 
 
+## Templating
+
+
+
+https://twistedmatrix.com/documents/current/web/howto/twisted-templates.html
+
+https://twistedmatrix.com/documents/current/web/howto/
+
+
+
 ## Misc python libraries
 
 ```bash
@@ -49,3 +59,6 @@ pip3 install beautifulsoup4
 
 ```
 
+# Admin
+
+https://github.com/uretgec/pure-admin

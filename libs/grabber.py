@@ -18,6 +18,8 @@ class Grabber:
 
     conf = None  # conf obj
     infoPageUrl = None
+    example_path = None
+    is_local= None
 
 
     def __init__(self):
@@ -27,29 +29,35 @@ class Grabber:
             self.infoPageUrl = "{}{}".format(
                 self.conf.get('remoterig','remoterigUrl'),
                 self.conf.get('remoterig','infoPage')
-                )            
-
+                )
+            self.is_local = self.conf.getboolean('general','is_local')
+            self.example_path = "./{}/status.htm".format(self.conf.get('general','local_path'))
 
     def getInfoPage(self):
         """Get the Remote rig info page
 
             returns: the page in success or false on failure
         """
-
-        page = self.__getPage(self.infoPageUrl)
+        if not self.is_local:
+            page = self.__get_page(self.infoPageUrl)
+        else:
+            page = self.__get_static_page()
         return page
 
 
     def getHeadInfo(self):
-        """Get head info grabbing the info page
+        """Get remote rig head info grabbing the info page
 
-           returns tuple with usel info        
+           returns tuple with usel info
         """
         infos = {}
         otherParty = None
         otherPartyMac = None
         page = self.getInfoPage()
-        soup = BeautifulSoup(page.content, 'html.parser')
+        if not self.is_local:
+            soup = BeautifulSoup(page.content, 'html.parser')
+        else:
+            soup = BeautifulSoup("".join(page), 'html.parser')
                 
         infos['otherPartyMac'] = ''
         
@@ -82,7 +90,7 @@ class Grabber:
         return infos
 
 
-    def __getPage(self, url):
+    def __get_page(self, url):
         """Get a page content
 
            param: url: the page url\n
@@ -91,22 +99,29 @@ class Grabber:
         response =  False
         try:
             response = requests.get(url)
-            if response.status_code == 200:        
+            if response.status_code == 200:
                 return response.content
             else:
                 print("Page not available: {}".format(url))
                 return False
         except requests.exceptions.Timeout:
-            print ("Timeout")            
+            print ("Timeout")
         except requests.exceptions.TooManyRedirects:
-            print ("Too many redirects")            
+            print ("Too many redirects")
         except requests.exceptions.RequestException as e:
-            print(e)            
-            raise SystemExit(e)                  
+            print(e)
+            raise SystemExit(e)
         finally:
             logging.info("Retrieved URL: {}".format(url))
-            return response        
-        
+            return response
+
+    def __get_static_page(self):
+        """ Get the page from the filesystem for debugging pourpouses
+        """
+        with open(self.example_path) as f:
+            content = f.readlines()
+            return content
+
 
 
 
