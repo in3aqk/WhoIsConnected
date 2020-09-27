@@ -13,6 +13,7 @@ import re
 
 import requests
 from libs.grabber import Grabber
+from libs.database import Database
 from libs.utility import readIni
 
 
@@ -21,16 +22,18 @@ class Pages():
     html_path = None
     conf = None  # conf obj
     grabber = None
+    db = None
 
     def __init__(self):
         self.conf = readIni()
         self.grabber = Grabber()
+        self.db = Database()
         self.html_path = os.path.dirname(
             os.path.realpath(__file__)) + "/../html/"
 
     def dashboard(self):
-
-        other_heads_table = self.grabber.gen_head_table()
+        other_heads_table = None
+        
         error_head = {
             "head_mac": "ERROR",
             "head_ip": "ERROR",
@@ -49,6 +52,7 @@ class Pages():
             head_on_db = self.grabber.get_head_from_db(
                 head_info["otherPartyMac"])
             if head_on_db:
+                other_heads_table = self.grabber.gen_head_table(head_on_db[2])
                 head = {
                     "head_mac": head_on_db[1],
                     "head_ip": head_on_db[2],
@@ -59,12 +63,18 @@ class Pages():
                 head = error_head
         else:
             head = error_head
+
         return self.get_page("dashboard", head)
 
     def get_page(self, page, vars):
         main = self.__merge_page("main.html", page, vars)
         return main
 
+
+    def delete_Head(self,id):
+        return self.db.deleteHeadById(id)
+
+    
     def __merge_page(self, main_page, page_name, vars):
 
         page = self.__get_page(main_page)

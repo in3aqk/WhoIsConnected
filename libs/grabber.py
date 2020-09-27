@@ -104,13 +104,38 @@ class Grabber:
         return self.db.get_all_heads()
 
 
-    def gen_head_table(self):
+    def gen_head_table(self, active_mac):
         heads = self.get_all_heads()
         table_content = ""
-        table_content = table_content + "<thead><tr><th>CALL</th><th>MAC</th><th>IP</th></tr></thead>"
+        table_content = table_content + \
+        "<thead><tr><th>ONLINE</th><th>CALL</th><th>MAC</th><th>IP</th><th colspan=\"2\" >Modify</th></tr></thead>"
 
         for head in heads:
-            table_content = table_content + "<tbody><tr><td>{}</td><td>{}</td><td>{}</td></tr></tbody>".format(head[3],head[2],head[1])
+            if head[2] == active_mac:
+                table_content = table_content + \
+                """<tbody>
+                <tr>
+                    <td style="background-color:red; color:white" >Online</td>
+                    <td><b>{}</b></td>
+                    <td>{}</td>
+                    <td>{}</td>
+                    <td><a onclick="modify_head({})" >Modify</a></td>
+                    <td><a onclick="delete_head({})" >Delete</a></td>
+                </tr>
+                </tbody>""".format(head[3],head[2],head[1],head[0],head[0])
+            else:
+                table_content = table_content + \
+                """<tbody>
+                <tr>
+                    <td style="background-color:green; color:white">Offline</td>
+                    <td>{}</td>
+                    <td>{}</td>
+                    <td>{}</td>
+                    <td><a onclick="modify_head({})" >Modify</a></td>
+                    <td><a onclick="delete_head({})" >Delete</a></td>
+                </tr>
+                </tbody>""".format(head[3],head[2],head[1],head[0],head[0])
+
 
         table = """
         <table class="pure-table pure-table-horizontal">

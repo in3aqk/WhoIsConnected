@@ -34,6 +34,14 @@ def main_page(request):
 def about_page(request):
     return pages.get_page("about",None)
 
+@app.route('/delete/<head_id>')
+def delete_page(request,head_id):
+    result = pages.delete_Head(head_id)
+    if result:
+        return 1
+    else:
+        return 0
+
 
 @app.route('/assets/', branch=True)
 def static(request):

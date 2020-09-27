@@ -148,3 +148,25 @@ class Database:
             con.close()
             return result
 
+    def deleteHeadById(self, id):
+        """ Delete a remoterig head searching by id\n
+            
+            param:mac : Head id\n
+        """
+        result = False
+        try:
+            con = self.connect()
+            cur = con.cursor()
+            cur.execute("delete from heads where id=?", (id,))
+            con.commit()
+        except Error as err:
+            logging.error(err)
+        else:
+            logging.info("Deleted head %s",id)
+            result = True
+        finally:
+            cur.close()
+            con.close()
+            return result
+
+
