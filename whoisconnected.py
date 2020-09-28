@@ -36,7 +36,15 @@ def about_page(request):
 
 @app.route('/delete/<head_id>')
 def delete_page(request,head_id):
-    result = pages.delete_Head(head_id)
+    result = pages.delete_head(head_id)
+    if result:
+        return 1
+    else:
+        return 0
+
+@app.route('/update/<head_id>/<new_name>')
+def update_page(request,head_id,new_name):
+    result = pages.update_head(head_id,new_name)
     if result:
         return 1
     else:

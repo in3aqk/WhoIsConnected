@@ -71,9 +71,11 @@ class Pages():
         return main
 
 
-    def delete_Head(self,id):
+    def delete_head(self,id):
         return self.db.deleteHeadById(id)
 
+    def update_head(self,id,new_name):
+        return self.db.updateHeadById(id,new_name)
     
     def __merge_page(self, main_page, page_name, vars):
 

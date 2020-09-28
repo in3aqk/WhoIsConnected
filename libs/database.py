@@ -106,7 +106,7 @@ class Database:
 
 
     def updateHeadByMac(self, ip, mac, name="unknown"):
-        """ Save a new remote rig head\n
+        """ Update a remote rig head\n
             param:ip  : Head Ip \n
             param:mac : Head Mac address\n
             param:name: Head name\n
@@ -126,6 +126,27 @@ class Database:
             cur.close()
             con.close()
             return result
+
+    def updateHeadById(self, id, name):
+        """ Update a remote rig head by id\n
+            param:id  : Head id \n
+            param:name: Head name"""
+        result = False
+        try:
+            con = self.connect()
+            cur = con.cursor()
+            cur.execute("update heads set name=? where id = ?", (name, id))
+            con.commit()
+        except Error as err:
+            logging.error(err)
+        else:
+            logging.info("Updated head with id %s",id)
+            result = True
+        finally:
+            cur.close()
+            con.close()
+            return result
+
 
     def deleteHeadByMac(self, mac):
         """ Delete a remoterig head searching by mac\n
