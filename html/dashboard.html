@@ -1,0 +1,20 @@
+<div class="items">
+    <h1 class="subhead">Dashboard</h1>
+    <p>Online user is <b>{{head_name}}</b>: MAC {{head_mac}} IP {{head_ip}} </p>
+    <div class="column-block">
+        {{other_heads_table}}</p>
+    </div>
+</div>
+<div id="dialog" title="Alert!!">
+    empty
+</div>
+<div id="dialog_edit_head" title="Edit user">
+    <form>
+        <fieldset>
+            <label for="name">Call sign:</label>
+            <input type="text" name="name" id="name" value="Call sign" class="text ui-widget-content ui-corner-all">
+            <!-- Allow form submission with keyboard without duplicating the dialog button -->
+            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+        </fieldset>
+    </form>
+</div>
