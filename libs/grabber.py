@@ -65,6 +65,7 @@ class Grabber:
 
         ipFound = False
         macFound = False
+        statusFound = False
         for tr in soup.find_all('tr'):
             if b"Other party" in tr.renderContents() and not ipFound:
                 tds = tr.find_all('td')
@@ -86,16 +87,26 @@ class Grabber:
                 else:
                     otherPartyMac = None
                     infos['otherPartyMac'] = ''
+            if b"Connection status" in tr.renderContents() and not statusFound:
+                tds = tr.find_all('td')
+                statusFound = True
+                if len(tds) == 2:
+                    status = tds[1].renderContents()
+                    infos['status'] = status.decode()
+                    # TODO LOG Entry Duplicate
+                    logging.info("Head status is %s", status.decode())
+                else:
+                    status = None
 
         if otherPartyMac == None:
             logging.info("Head not found")
 
         return infos
 
-    def update_heads(self,head_mac,head_ip):
+    def update_heads(self,head_mac,head_ip,status):
         head = self.db.getHead(head_mac)
         if not head:
-            self.db.insertHead(head_ip,head_mac)
+            self.db.insertHead(head_ip,head_mac,status)
 
     def get_head_from_db(self,head_mac):
         return self.db.getHead(head_mac)
@@ -104,14 +115,14 @@ class Grabber:
         return self.db.get_all_heads()
 
 
-    def gen_head_table(self, active_mac):
+    def gen_head_table(self, active_mac, status):
         heads = self.get_all_heads()
         table_content = ""
         table_content = table_content + \
         "<thead><tr><th>ONLINE</th><th>CALL</th><th>MAC</th><th>IP</th><th colspan=\"2\" >Modify</th></tr></thead>"
 
         for head in heads:
-            if head[2] == active_mac:
+            if head[2] == active_mac and status != "Disconnected":
                 table_content = table_content + \
                 """<tbody>
                 <tr>

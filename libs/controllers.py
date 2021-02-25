@@ -38,6 +38,7 @@ class Pages():
             "head_mac": "ERROR",
             "head_ip": "ERROR",
             "head_name": "ERROR",
+            "status": "ERROR",
             "other_heads_table":other_heads_table
         }
 
@@ -47,18 +48,31 @@ class Pages():
         
         if page:
             head_info = self.grabber.getHeadInfo()
-            self.grabber.update_heads(
-                head_info["otherPartyMac"], head_info["otherParty"])
+            self.grabber.update_heads(\
+                head_info["otherPartyMac"],
+                head_info["otherParty"],
+                head_info["status"]
+                )
             head_on_db = self.grabber.get_head_from_db(
                 head_info["otherPartyMac"])
             if head_on_db:
-                other_heads_table = self.grabber.gen_head_table(head_on_db[2])
-                head = {
-                    "head_mac": head_on_db[1],
-                    "head_ip": head_on_db[2],
-                    "head_name": head_on_db[3],
-                    "other_heads_table":other_heads_table
-                }
+                other_heads_table = self.grabber.gen_head_table(head_on_db[2],head_on_db[4])
+                if head_on_db[4] != "Disconnected":
+                    head = {
+                        "head_mac": head_on_db[1],
+                        "head_ip": head_on_db[2],
+                        "head_name": head_on_db[3],
+                        "status": head_on_db[4],
+                        "other_heads_table":other_heads_table
+                    }
+                else:
+                        head = {
+                        "head_mac": "--",
+                        "head_ip": "--",
+                        "head_name": "Unknown",
+                        "status": "--",
+                        "other_heads_table":other_heads_table
+                    }
             else:
                 head = error_head
         else:

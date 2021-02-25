@@ -43,17 +43,18 @@ class Database:
             return conn
 
 
-    def insertHead(self, ip, mac, name="unknown"):
+    def insertHead(self, ip, mac, status, name="unknown"):
         """ Save a new remote rig head\n
             param:ip  : Head Ip \n
             param:mac : Head Mac address\n
             param:name: Head name\n
+            param:status : Head status\n
         """
         result = False
         try:
             con = self.connect()
             cur = con.cursor()
-            cur.execute("insert into heads (mac, ip, name) values (?, ?, ?)", (mac, ip, name))
+            cur.execute("insert into heads (mac, ip, name, status) values (?, ?, ?, ?)", (mac, ip, name, status))
             con.commit()
         except Error as err:
             logging.error(err)
