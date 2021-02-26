@@ -122,30 +122,31 @@ class Grabber:
         "<thead><tr><th>ONLINE</th><th>CALL</th><th>MAC</th><th>IP</th><th colspan=\"2\" >Modify</th></tr></thead>"
 
         for head in heads:
-            if head[2] == active_mac and status != "Disconnected":
-                table_content = table_content + \
-                """<tbody>
-                <tr>
-                    <td style="background-color:red; color:white" >Online</td>
-                    <td><b>{}</b></td>
-                    <td>{}</td>
-                    <td>{}</td>
-                    <td><a onclick="modify_head({},'{}')" >Modify</a></td>
-                    <td><a onclick="delete_head({})" >Delete</a></td>
-                </tr>
-                </tbody>""".format(head[3],head[2],head[1],head[0],head[3],head[0])
-            else:
-                table_content = table_content + \
-                """<tbody>
-                <tr>
-                    <td style="background-color:green; color:white">Offline</td>
-                    <td>{}</td>
-                    <td>{}</td>
-                    <td>{}</td>
-                    <td><a onclick="modify_head({},'{}')" >Modify</a></td>
-                    <td><a onclick="delete_head({})" >Delete</a></td>
-                </tr>
-                </tbody>""".format(head[3],head[2],head[1],head[0],head[3],head[0])
+            if head[1] != "0.0.0.0":
+                if head[2] == active_mac and status != "Disconnected":
+                    table_content = table_content + \
+                    """<tbody>
+                    <tr>
+                        <td style="background-color:red; color:white" >Online</td>
+                        <td><b>{}</b></td>
+                        <td>{}</td>
+                        <td>{}</td>
+                        <td><a onclick="modify_head({},'{}')" >Modify</a></td>
+                        <td><a onclick="delete_head({})" >Delete</a></td>
+                    </tr>
+                    </tbody>""".format(head[3],head[2],head[1],head[0],head[3],head[0])
+                else:
+                    table_content = table_content + \
+                    """<tbody>
+                    <tr>
+                        <td style="background-color:green; color:white">Offline</td>
+                        <td>{}</td>
+                        <td>{}</td>
+                        <td>{}</td>
+                        <td><a onclick="modify_head({},'{}')" >Modify</a></td>
+                        <td><a onclick="delete_head({})" >Delete</a></td>
+                    </tr>
+                    </tbody>""".format(head[3],head[2],head[1],head[0],head[3],head[0])
 
 
         table = """
