@@ -32,7 +32,7 @@ class Pages():
             os.path.realpath(__file__)) + "/../html/"
 
     def dashboard(self):
-        other_heads_table = None
+        other_heads_table = ""
         
         error_head = {
             "head_mac": "ERROR",

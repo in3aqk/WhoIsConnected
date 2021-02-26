@@ -50,7 +50,7 @@ class Grabber:
     def getHeadInfo(self):
         """Get remote rig head info grabbing the info page
 
-           returns tuple with usel info
+           returns tuple with connected user info
         """
         infos = {}
         otherParty = None
@@ -104,9 +104,10 @@ class Grabber:
         return infos
 
     def update_heads(self,head_mac,head_ip,status):
-        head = self.db.getHead(head_mac)
-        if not head:
-            self.db.insertHead(head_ip,head_mac,status)
+        if head_ip != "0.0.0.0" and head_mac != None :
+            head = self.db.getHead(head_mac)
+            if not head:
+                self.db.insertHead(head_ip,head_mac,status)
 
     def get_head_from_db(self,head_mac):
         return self.db.getHead(head_mac)
